@@ -36,7 +36,6 @@ on 'test' => sub {
 
 requires 'Aion', '1.6';
 requires 'Aion::Format';
-requires 'Aion::Pleroma';
 requires 'Aion::Run';
 requires 'List::Util';
 requires 'common::sense';
