@@ -11,8 +11,8 @@ use common::sense; use open qw/:std :utf8/;  use Carp qw//; use Cwd qw//; use Fi
 #>> 
 #>> use Aion;
 #>> 
-#>> has radius => (is => 'ro', isa => Num, default => 0);
-#>> has weight => (is => 'ro', isa => Num, default => 0);
+#>> has radius => (is => 'rw', isa => Num);
+#>> has weight => (is => 'rw', isa => Num);
 #>> 
 #>> 1;
 #@< EOF
@@ -46,21 +46,43 @@ use common::sense; use open qw/:std :utf8/;  use Carp qw//; use Cwd qw//; use Fi
 #>> 	$event->weight(12);
 #>> }
 #>> 
+#>> #@listen Event::BallEvent#mini „Minimize version”
+#>> sub minimize {
+#>> 	my ($self, $event) = @_;
+#>> 	
+#>> 	$event->weight(3);
+#>> }
+#>> 
 #>> 1;
+#@< EOF
+# 
+# Файл etc/annotation/listen.ann:
+#@> etc/annotation/listen.ann
+#>> Listener::RadiusListener#listen,6=Event::BallEvent
+#>> Listener::WeightListener#listen,6=Event::BallEvent
+#>> Listener::WeightListener#minimize,6=Event::BallEvent#mini „Minimize version”
 #@< EOF
 # 
 subtest 'SYNOPSIS' => sub { 
 use lib 'lib';
 
 use Aion::Emitter;
+use Event::BallEvent;
 
 my $emitter = Aion::Emitter->new;
-my $ballEvent = BallEvent->new;
+my $ballEvent = Event::BallEvent->new;
 
 $emitter->emit($ballEvent);
 
-$ballEvent->radius # 10
-$ballEvent->weight # 12
+local ($::_g0 = do {$ballEvent->radius}, $::_e0 = do {10}); ::ok defined($::_g0) == defined($::_e0) && $::_g0 eq $::_e0, '$ballEvent->radius # -> 10' or ::diag ::_struct_diff($::_g0, $::_e0); undef $::_g0; undef $::_e0;
+local ($::_g0 = do {$ballEvent->weight}, $::_e0 = do {12}); ::ok defined($::_g0) == defined($::_e0) && $::_g0 eq $::_e0, '$ballEvent->weight # -> 12' or ::diag ::_struct_diff($::_g0, $::_e0); undef $::_g0; undef $::_e0;
+
+$ballEvent->radius(0);
+
+$emitter->emit($ballEvent, "mini");
+
+local ($::_g0 = do {$ballEvent->weight}, $::_e0 = do {3}); ::ok defined($::_g0) == defined($::_e0) && $::_g0 eq $::_e0, '$ballEvent->weight # -> 3' or ::diag ::_struct_diff($::_g0, $::_e0); undef $::_g0; undef $::_e0;
+local ($::_g0 = do {$ballEvent->radius}, $::_e0 = do {0}); ::ok defined($::_g0) == defined($::_e0) && $::_g0 eq $::_e0, '$ballEvent->radius # -> 0' or ::diag ::_struct_diff($::_g0, $::_e0); undef $::_g0; undef $::_e0;
 
 # 
 # # DESCRIPTION
@@ -73,9 +95,13 @@ $ballEvent->weight # 12
 # 
 # # SUBROUTINES
 # 
-# ## emit ($event)
+# ## emit ($event, [$key])
 # 
 # Излучает событие: вызывает все слушатели связанные с событием `$event`.
+# 
+# Дополнительный параметр `$key` позволяет указать уточняющее событие. Представьте, что у нас множество контроллеров и мы хотим излучить событие не для всех, а для каждого конкретного контроллера. Писать для каждого контроллера класс расширяющий класс запроса – расточительно.
+# 
+# `$key` может содержать буквы, цифры, подчёркивание, тире, двоеточие и точку.
 # 
 # # AUTHOR
 # 
