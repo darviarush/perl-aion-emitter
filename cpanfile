@@ -17,6 +17,8 @@ on 'develop' => sub {
 };
 
 on 'test' => sub {
+	requires 'Test::More', '0.98';
+	
 	requires 'Carp';
 	requires 'Cwd';
 	requires 'Data::Dumper';
@@ -28,9 +30,14 @@ on 'test' => sub {
 	requires 'Scalar::Util';
 	requires 'String::Diff';
 	requires 'Term::ANSIColor';
-	requires 'Test::More';
+	requires 'lib';
 	requires 'open';
 };
 
 requires 'Aion', '1.6';
+requires 'Aion::Format';
+requires 'Aion::Pleroma';
+requires 'Aion::Run';
+requires 'List::Util';
 requires 'common::sense';
+requires 'config';
