@@ -4,19 +4,30 @@ jobs:
   build:
     strategy:
       matrix:
-        perl: ["5.40", "5.38", "5.36", "5.34", "5.32", "5.30", "5.28", "5.26", "5.24", "5.22"]
+        perl: ["5.40.0", "5.38.0", "5.36.0", "5.34.0", "5.32.0", "5.30.0", "5.28.0", "5.26.0", "5.24.0", "5.22.0"]
         os: [ubuntu-latest]
-    name: Perl ${{ matrix.perl }} on ${{ matrix.os }}
+    name: Perl ${{ matrix.perl }} on ${matrix.os }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Perl
-        uses: shogo82148/actions-setup-perl@v1.37.0  # Pin to a specific version
-        with:
-          perl-version: ${{ matrix.perl }}
-          enable-modules-cache: false  # Disable cache to avoid attestation issues
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libssl-dev
+      
+      - name: Install Perl ${{ matrix.perl }}
+        run: |
+          wget https://www.cpan.org/src/5.0/perl-${{ matrix.perl }}.tar.gz
+          tar -xzf perl-${{ matrix.perl }}.tar.gz
+          cd perl-${{ matrix.perl }}
+          ./Configure -des -Dprefix=$HOME/perl5
+          make
+          make install
+          echo "$HOME/perl5/bin" >> $GITHUB_PATH
+      
       - name: Install Dependencies
         run: |
           curl -sL https://git.io | perl - install -g --with-recommends --with-suggestions
+      
       - name: Run test
         run: prove -lr t
