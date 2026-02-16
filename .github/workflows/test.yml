@@ -15,8 +15,8 @@ jobs:
         with:
           perl-version: ${{ matrix.perl }}
           enable-modules-cache: false
+
       - name: Install Dependencies
-        run: |
-          curl -sL https://git.io | perl - install -g --with-recommends --with-suggestions
+        run: cpanm --installdeps . --with-recommends --with-suggestions
       - name: Run test
         run: prove -lvr t
