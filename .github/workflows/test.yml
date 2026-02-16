@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup Perl
-        uses: shogo82148/actions-setup-perl@v2.3.0  # Pin to a specific version
+        uses: shogo82148/actions-setup-perl@v1.37.0  # Pin to a specific version
         with:
           perl-version: ${{ matrix.perl }}
           enable-modules-cache: false  # Disable cache to avoid attestation issues
