@@ -19,7 +19,6 @@ jobs:
           perl-version: ${{ matrix.perl }}
           install-modules-with: cpm
           install-modules-args: --with-recommends
-          verify-attestation: false
           enable-modules-cache: true
       - name: Run test
         run: prove -lr t
