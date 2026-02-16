@@ -4,21 +4,21 @@ jobs:
   build:
     strategy:
       matrix:
-        perl: ["latest", "5.40", "5.38", "5.36", "5.34", "5.32", "5.30", "5.28", "5.26", "5.24", "5.22"]
+        perl: ["5.40", "5.38", "5.36", "5.34", "5.32", "5.30", "5.28", "5.26", "5.24", "5.22"]
         os: [macos-latest]
     name: Perl ${{ matrix.perl }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - name: Setup perl
-        uses: shogo82148/actions-setup-perl@v1.37.0
-        env:
-          ACTIONS_ID_TOKEN_REQUEST_TOKEN: ""
-          NODE_TLS_REJECT_UNAUTHORIZED: 0
+      - name: Install Perl
+        uses: perl-actions/install-perl@v1
         with:
-          perl-version: ${{ matrix.perl }}
-          install-modules-with: cpm
-          install-modules-args: --with-recommends
-          enable-modules-cache: true
+          path: ~/perl5
+          key: ${{ runner.os }}-perl-${{ matrix.perl }}-${{ hashFiles('cpanfile') }}
+          restore-keys: |
+            ${{ runner.os }}-perl-${{ matrix.perl }}-
+      - name: Install Dependencies
+        run: |
+          curl -sL https://git.io | perl - install -g --with-recommends --with-suggestions
       - name: Run test
         run: prove -lr t
