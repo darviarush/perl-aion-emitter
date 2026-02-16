@@ -13,10 +13,7 @@ jobs:
       - name: Install Perl
         uses: perl-actions/install-perl@v1
         with:
-          path: ~/perl5
-          key: ${{ runner.os }}-perl-${{ matrix.perl }}-${{ hashFiles('cpanfile') }}
-          restore-keys: |
-            ${{ runner.os }}-perl-${{ matrix.perl }}-
+          perl-version: ${{ matrix.perl }}
       - name: Install Dependencies
         run: |
           curl -sL https://git.io | perl - install -g --with-recommends --with-suggestions
