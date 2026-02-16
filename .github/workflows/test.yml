@@ -12,9 +12,12 @@ jobs:
       - uses: actions/checkout@v4
       - name: Setup perl
         uses: shogo82148/actions-setup-perl@v1.37.0
+        env:
+          ACTIONS_ID_TOKEN_REQUEST_TOKEN: ""
+          NODE_TLS_REJECT_UNAUTHORIZED: 0
         with:
           perl-version: ${{ matrix.perl }}
-          install-modules-with: cpanm
+          install-modules-with: cpm
           install-modules-args: --with-recommends
           verify-attestation: false
           enable-modules-cache: true
