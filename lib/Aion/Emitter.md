@@ -1,4 +1,4 @@
-!ru:en,bages
+!ru:en,badges
 # NAME
 
 Aion::Emitter - диспетчер событий
