@@ -11,9 +11,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup Perl
-        uses: shogo82148/actions-setup-perl@v1
+        uses: shogo82148/actions-setup-perl@v2.3.0  # Pin to a specific version
         with:
           perl-version: ${{ matrix.perl }}
+          enable-modules-cache: false  # Disable cache to avoid attestation issues
       - name: Install Dependencies
         run: |
           curl -sL https://git.io | perl - install -g --with-recommends --with-suggestions
