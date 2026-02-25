@@ -11,25 +11,36 @@ use feature 'defer';
 use Aion;
 
 use config INI => 'etc/annotation/listen.ann';
+use config EVENT => {};
 
 # Путь к собранным из аннотаций методам
 has ini => (is => 'ro', isa => Str, default => INI);
 
 # Список слушателей
-has event => (is => 'ro', isa => HashRef[ArrayRef[Dict[pkg => Str, sub => Str, remark => Maybe[Str]]]], default => sub {
+has event => (is => 'ro', isa => HashRef[ArrayRef[Dict[pkg => Str, sub => Str, line => Nat, nice => Option[Num], remark => Option[Str]]]], default => sub {
 	my ($self) = @_;
-	my %event;
+	my %event = %{EVENT()};
 	open my $f, "<:utf8", $self->ini or die "Not open ${\$self->ini}"; defer { close $f };
 	while(<$f>) {
-		die "${\$self->ini}:$. corrupt!" unless /^([\w:]+)#(\w*),\d+=([\w:]+(?:#[\w.:-]+)?)(?:\s+(.*?))??\s*$/;
-		my ($pkg, $sub, $evt, $remark) = ($1, $2, $3, $4);
+		die "${\$self->ini}:$. corrupt!" unless /^([\w:]+)#(\w*),(\d+)=(?:(-?\d+(?:\.\d+)?)\s+)?([a-z][\w:]*(?:#[\w.:-]+)?)(?:\s+(.*?))??\s*$/i;
+		my ($pkg, $sub, $line, $nice, $evt, $remark) = ($1, $2, $3, $4, $5, $6);
 		push @{$event{$evt}}, {
 			pkg => $pkg,
 			sub => $sub,
-			remark => $remark,
+			line => $line,
+			$nice? (nice => $nice): (),
+			$remark ne ''? (remark => $remark): (),
 		};
 	}
 
+	for my $listens (values %event) {
+		@$listens = sort {
+			$a->{nice} <=> $b->{nice}
+			or $a->{pkg} cmp $b->{pkg}
+			or $a->{sub} cmp $b->{sub}
+		} @$listens;
+	}
+	
 	\%event
 });
 
