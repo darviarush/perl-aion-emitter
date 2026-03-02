@@ -6,7 +6,6 @@ use common::sense;
 our $VERSION = "0.0.0-prealpha";
 
 use Aion::Pleroma;
-use feature 'defer';
 
 use Aion;
 
@@ -20,9 +19,9 @@ has ini => (is => 'ro', isa => Str, default => INI);
 has event => (is => 'ro', isa => HashRef[ArrayRef[Dict[pkg => Str, sub => Str, line => Nat, nice => Option[Num], remark => Option[Str]]]], default => sub {
 	my ($self) = @_;
 	my %event = %{EVENT()};
-	open my $f, "<:utf8", $self->ini or die "Not open ${\$self->ini}"; defer { close $f };
+	open my $f, "<:utf8", $self->ini or die "Not open ${\$self->ini}";
 	while(<$f>) {
-		die "${\$self->ini}:$. corrupt!" unless /^([\w:]+)#(\w*),(\d+)=(?:(-?\d+(?:\.\d+)?)\s+)?([a-z][\w:]*(?:#[\w.:-]+)?)(?:\s+(.*?))??\s*$/i;
+		close($f), die "${\$self->ini}:$. corrupt!" unless /^([\w:]+)#(\w*),(\d+)=(?:(-?\d+(?:\.\d+)?)\s+)?([a-z][\w:]*(?:#[\w.:-]+)?)(?:\s+(.*?))??\s*$/i;
 		my ($pkg, $sub, $line, $nice, $evt, $remark) = ($1, $2, $3, $4, $5, $6);
 		push @{$event{$evt}}, {
 			pkg => $pkg,
@@ -32,7 +31,8 @@ has event => (is => 'ro', isa => HashRef[ArrayRef[Dict[pkg => Str, sub => Str, l
 			$remark ne ''? (remark => $remark): (),
 		};
 	}
-
+	close $f;
+	
 	for my $listens (values %event) {
 		@$listens = sort {
 			$a->{nice} <=> $b->{nice}
