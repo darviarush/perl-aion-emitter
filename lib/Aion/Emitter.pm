@@ -3,7 +3,7 @@ package Aion::Emitter;
 
 use common::sense;
 
-our $VERSION = "0.0.0-prealpha";
+our $VERSION = "0.0.1-prealpha";
 
 use Aion::Pleroma;
 

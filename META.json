@@ -51,8 +51,8 @@
       "runtime" : {
          "requires" : {
             "Aion" : "1.6",
-            "Aion::Format" : "0",
-            "Aion::Run" : "0",
+            "Aion::Format" : "v0.1.1",
+            "Aion::Run" : "v0.0.3",
             "List::Util" : "0",
             "common::sense" : "0",
             "config" : "0",
@@ -90,7 +90,7 @@
          "web" : "https://github.com/darviarush/perl-aion-emitter"
       }
    },
-   "version" : "0.0.0",
+   "version" : "0.0.1",
    "x_authority" : "cpan:DART",
    "x_contributors" : [
       "Yaroslav O. Kosmina <dart@cpan.org>"
