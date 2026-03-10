@@ -78,6 +78,10 @@ __END__
 
 Aion::Emitter - event dispatcher
 
+=head1 VERSION
+
+0.1.0
+
 =head1 SYNOPSIS
 
 File lib/Event/BallEvent.pm:
