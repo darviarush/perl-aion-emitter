@@ -3,7 +3,7 @@ package Aion::Emitter;
 
 use common::sense;
 
-our $VERSION = "0.1.0";
+our $VERSION = "0.1.1";
 
 use Aion::Pleroma;
 
@@ -39,11 +39,7 @@ has event => (is => 'ro', isa => $event_isa, default => sub {
 	}
 
 	for my $listens (values %event) {
-		@$listens = sort {
-			$a->{nice} <=> $b->{nice}
-			or $a->{pkg} cmp $b->{pkg}
-			or $a->{sub} cmp $b->{sub}
-		} @$listens;
+		@$listens = sort { $a->{nice} <=> $b->{nice} or $a->{act} cmp $b->{act} } @$listens;
 	}
 	
 	\%event
@@ -80,7 +76,7 @@ Aion::Emitter - event dispatcher
 
 =head1 VERSION
 
-0.1.0
+0.1.1
 
 =head1 SYNOPSIS
 
